@@ -50,9 +50,9 @@
 //}
 
 //Ä£ÄâÊµÏÖstrcpy
-char *my_strcpy(char *dest, const char*src)
+char* my_strcpy(char *dest, const char*src)
 {
-	char *ret = dest;
+	char* ret = dest;
 	assert(dest!= NULL);
 	assert(src!= NULL);
 	while ((*dest++ = *src++))
@@ -66,7 +66,7 @@ int main()
 	char arr1[20] = { 0 };
 	char arr2[] = "hello bit";
 	//char arr2[] = { 'b', 'i', 't', '\0' };
-	my_strcpy(arr1, arr2);
-	printf("%s\n", arr1);
+	
+	printf("%s\n", my_strcpy(arr1, arr2));
 	return 0;
 }
