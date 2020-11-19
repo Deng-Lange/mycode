@@ -100,6 +100,8 @@ int my_atoi(const char* str)
 	//空指针
 	if (str == NULL)
 		return 0;
+	if (*str == '\0')
+		return 0;
 	//空白字符的处理
 	while (isspace(*str))
 	{
@@ -118,26 +120,35 @@ int my_atoi(const char* str)
 	}
 	
 	long long ret = 0;
-	while (*str)
+	while (isdigit(*str))
 	{
-		if (isdigit(*str) == 0)
+		ret = ret * 10 + flag*(*str - '0');
+		if (ret > INT_MAX || ret < INT_MIN)
 		{
-			break;
+			ret = 0;
+			return (int)ret;
 		}
-		else
-		{
-			ret = ret * 10 + flag*(*str - '0');
-			str++;
-		}
+		str++;
 	}
-	return ret;
+	if (*str == '\0')
+	{
+		state = VALID;
+		return (int)ret;
+	}
+	return (int)ret;
 }
 
 int main()
 {
-	char*p = "   +123456";
+	char* p = "  123@456";
 	int ret = my_atoi(p);
-	printf("%d\n", ret);
-
+	if (state == VALID)
+	{
+		printf("%d\n", ret);
+	}
+	else
+	{
+		printf("%d\n", ret);
+	}
 	return 0;
 }

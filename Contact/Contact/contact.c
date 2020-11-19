@@ -2,6 +2,46 @@
 
 #include "contact.h"
 
+void check_capacity(Contact* pc)
+{
+	if (pc->sz == pc->capacity)
+	{
+		//增加容量
+		PeoInfo* ptr = (PeoInfo*)realloc(pc->data, (pc->capacity + INC)*sizeof(PeoInfo));
+		if (ptr != NULL)
+		{
+			pc->data = ptr;
+			pc->capacity += INC;
+			printf("增容成功\n");
+		}
+		else
+		{
+			perror("add_contact::realloc");
+			return;
+		}
+	}
+}
+
+void load_contact(Contact* pc)
+{
+	PeoInfo tmp = { 0 };//临时空间
+	FILE* pfRead = fopen("contact.dat", "rb");
+	if (pfRead == NULL)
+	{
+		perror("open file for reading");
+		return;
+	}
+	//加载数据
+	while (fread(&tmp, sizeof(PeoInfo), 1, pfRead))
+	{
+		check_capacity(pc);
+		pc->data[pc->sz] = tmp;
+		pc->sz++;
+	}
+	fclose(pfRead);
+	pfRead = NULL;
+}
+
 void init_contact(Contact* pc)
 {
 	assert(pc);
@@ -13,6 +53,8 @@ void init_contact(Contact* pc)
 		perror("InitContact::malloc");
 		return;
 	}
+	//加载通讯录的信息
+	load_contact(pc);
 }
 
 void destroy_contact(Contact* pc)
@@ -224,4 +266,22 @@ void sort_contact(Contact* pc)
 			break;
 		}
 	}
+}
+
+void save_contact(Contact* pc)
+{
+	int i = 0;
+	FILE* pfWrite = fopen("contact.dat", "wb");
+	if (pfWrite == NULL)
+	{
+		perror("open file for writting");
+		return;
+	}
+	//写数据
+	for (i = 0; i < pc->sz; i++)
+	{
+		fwrite(pc->data + i, sizeof(PeoInfo), 1, pfWrite);
+	}
+	fclose(pfWrite);
+	pfWrite = NULL;
 }
